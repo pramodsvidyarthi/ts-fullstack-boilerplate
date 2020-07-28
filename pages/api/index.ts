@@ -1,59 +1,19 @@
-import { ApolloServer, gql, makeExecutableSchema } from 'apollo-server-micro'
-import { PrismaClient } from '@prisma/client'
+import { ApolloServer } from 'apollo-server-micro'
+import { objectType, stringArg, arg, inputObjectType, makeSchema } from '@nexus/schema';
+import path from 'path';
+// @ts-ignore
+import { PrismaClient } from '@prisma/client';
+import * as schemaTypes from '../../schema';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
-const typeDefs = gql`
-  type Query {
-    templates: [Template!]!
-    templateByName(id: String): Template!
-  }
-
-  type Template {
-    id: String!
-    name: String!
-    columns: [Column!]!
-  }
-
-  type Column {
-    id: Int
-    title: String
-  }
-
-  input ColumnsInputType {
-    id: Int
-    title: String
-  }
-
-  type Mutation {
-    createTemplate(name: String!, columns: [ColumnsInputType]!): Template!
-  }
-`;
-
-const resolvers = {
-  Query: {
-    async templates() {
-      const templates = await prisma.template.findMany();
-      return templates;
-    },
-    async templateByName(parent, { id }) {
-      const template = await prisma.template.findOne({
-        where: { id },
-      });
-      return template;
-    }
+export const schema = makeSchema({
+  types: schemaTypes,
+  outputs: {
+    typegen: path.join(process.cwd(), 'generated', 'nexus-typegen.ts'),
+    schema: path.join(process.cwd(), 'generated', 'schema.graphql')
   },
-  Mutation: {
-    async createTemplate(parent: any, { name, columns }) {
-      const data = await prisma.template.create({
-        data: { name, columns }
-      });
-      return data;
-    }
-  },
-}
-
-export const schema = makeExecutableSchema({ typeDefs, resolvers })
+});
 
 export const config = {
   api: {
@@ -61,6 +21,6 @@ export const config = {
   },
 }
 
-export default new ApolloServer({ schema }).createHandler({
+export default new ApolloServer({ schema, context: { db: prisma } }).createHandler({
   path: '/api',
 })
