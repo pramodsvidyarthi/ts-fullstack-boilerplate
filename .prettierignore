@@ -1,0 +1,8 @@
+/.next/
+/out/
+build/
+node_modules/
+generated/
+package-lock.json
+yarn.lock
+package.json

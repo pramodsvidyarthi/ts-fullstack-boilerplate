@@ -2,5 +2,8 @@
   "workbench.colorCustomizations": {
     "titleBar.activeBackground": "#4C51BF",
     "titleBar.inactiveBackground": "#EBF4FF"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": false
   }
 }

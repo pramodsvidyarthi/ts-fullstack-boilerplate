@@ -1,7 +1,6 @@
-import { ApolloServer } from 'apollo-server-micro'
-import { objectType, stringArg, arg, inputObjectType, makeSchema } from '@nexus/schema';
+import { ApolloServer } from 'apollo-server-micro';
+import { makeSchema } from '@nexus/schema';
 import path from 'path';
-// @ts-ignore
 import { PrismaClient } from '@prisma/client';
 import * as schemaTypes from '../../schema';
 
@@ -11,7 +10,7 @@ export const schema = makeSchema({
   types: schemaTypes,
   outputs: {
     typegen: path.join(process.cwd(), 'generated', 'nexus-typegen.ts'),
-    schema: path.join(process.cwd(), 'generated', 'schema.graphql')
+    schema: path.join(process.cwd(), 'generated', 'schema.graphql'),
   },
 });
 
@@ -19,8 +18,11 @@ export const config = {
   api: {
     bodyParser: false,
   },
-}
+};
 
-export default new ApolloServer({ schema, context: { db: prisma } }).createHandler({
+export default new ApolloServer({
+  schema,
+  context: { db: prisma },
+}).createHandler({
   path: '/api',
-})
+});
