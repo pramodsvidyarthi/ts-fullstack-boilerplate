@@ -3,24 +3,24 @@ import { objectType, stringArg } from '@nexus/schema';
 export const Query = objectType({
   name: 'Query',
   definition(t) {
-    t.list.field('templates', {
-      type: 'Template',
+    t.list.field('getAllUsers', {
+      type: 'User',
       resolve: async (parent, args, { db }) => {
-        const templates = await db.template.findMany();
-        return templates;
+        const users = await db.user.findMany();
+        return users;
       },
     });
 
-    t.field('templateByName', {
-      type: 'Template',
+    t.field('getUserByEmail', {
+      type: 'User',
       args: {
-        id: stringArg(),
+        email: stringArg(),
       },
-      resolve: async (parent, { id }, { db }) => {
-        const template = await db.template.findOne({
-          where: { id },
+      resolve: async (parent, { email }, { db }) => {
+        const user = await db.user.findOne({
+          where: { email },
         });
-        return template;
+        return user;
       },
     });
   },

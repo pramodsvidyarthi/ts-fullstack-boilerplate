@@ -2,27 +2,25 @@
 ### Do not make changes to this file directly
 
 
-type Column {
-  id: Int
-  title: String
-}
-
-input ColumnsInputType {
-  id: Int
-  title: String
-}
-
 type Mutation {
-  createTemplate(columns: [ColumnsInputType!]!, name: String!): Template!
+  createUser(email: String!, name: String!): User!
+}
+
+type Post {
+  authorId: Int!
+  content: String
+  id: Int!
+  published: Boolean!
+  title: String!
 }
 
 type Query {
-  templateByName(id: String): Template!
-  templates: [Template!]!
+  getAllUsers: [User!]!
+  getUserByEmail(email: String): User!
 }
 
-type Template {
-  columns: [Column!]!
-  id: String!
+type User {
+  email: String!
+  id: Int!
   name: String!
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 
-const Hello = () => {
+function Hello(): JSX.Element {
   return <h1>Hello world...!!!</h1>;
-};
+}
 
 export default Hello;

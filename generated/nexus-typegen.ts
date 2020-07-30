@@ -14,25 +14,24 @@ declare global {
 }
 
 export interface NexusGenInputs {
-  ColumnsInputType: { // input type
-    id?: number | null; // Int
-    title?: string | null; // String
-  }
 }
 
 export interface NexusGenEnums {
 }
 
 export interface NexusGenRootTypes {
-  Column: { // root type
-    id?: number | null; // Int
-    title?: string | null; // String
-  }
   Mutation: {};
+  Post: { // root type
+    authorId: number; // Int!
+    content?: string | null; // String
+    id: number; // Int!
+    published: boolean; // Boolean!
+    title: string; // String!
+  }
   Query: {};
-  Template: { // root type
-    columns: NexusGenRootTypes['Column'][]; // [Column!]!
-    id: string; // String!
+  User: { // root type
+    email: string; // String!
+    id: number; // Int!
     name: string; // String!
   }
   String: string;
@@ -43,38 +42,40 @@ export interface NexusGenRootTypes {
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
-  ColumnsInputType: NexusGenInputs['ColumnsInputType'];
 }
 
 export interface NexusGenFieldTypes {
-  Column: { // field return type
-    id: number | null; // Int
-    title: string | null; // String
-  }
   Mutation: { // field return type
-    createTemplate: NexusGenRootTypes['Template']; // Template!
+    createUser: NexusGenRootTypes['User']; // User!
+  }
+  Post: { // field return type
+    authorId: number; // Int!
+    content: string | null; // String
+    id: number; // Int!
+    published: boolean; // Boolean!
+    title: string; // String!
   }
   Query: { // field return type
-    templateByName: NexusGenRootTypes['Template']; // Template!
-    templates: NexusGenRootTypes['Template'][]; // [Template!]!
+    getAllUsers: NexusGenRootTypes['User'][]; // [User!]!
+    getUserByEmail: NexusGenRootTypes['User']; // User!
   }
-  Template: { // field return type
-    columns: NexusGenRootTypes['Column'][]; // [Column!]!
-    id: string; // String!
+  User: { // field return type
+    email: string; // String!
+    id: number; // Int!
     name: string; // String!
   }
 }
 
 export interface NexusGenArgTypes {
   Mutation: {
-    createTemplate: { // args
-      columns: NexusGenInputs['ColumnsInputType'][]; // [ColumnsInputType!]!
+    createUser: { // args
+      email: string; // String!
       name: string; // String!
     }
   }
   Query: {
-    templateByName: { // args
-      id?: string | null; // String
+    getUserByEmail: { // args
+      email?: string | null; // String
     }
   }
 }
@@ -84,9 +85,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Column" | "Mutation" | "Query" | "Template";
+export type NexusGenObjectNames = "Mutation" | "Post" | "Query" | "User";
 
-export type NexusGenInputNames = "ColumnsInputType";
+export type NexusGenInputNames = never;
 
 export type NexusGenEnumNames = never;
 
