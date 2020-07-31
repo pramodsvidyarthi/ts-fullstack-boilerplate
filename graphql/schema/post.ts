@@ -8,5 +8,13 @@ export const Post = objectType({
     t.string('content', { nullable: true });
     t.boolean('published');
     t.int('authorId');
+    t.field('author', {
+      type: 'User',
+      nullable: true,
+      resolve: async (parent, args, { db }) => {
+        const user = await db.user.findOne({ where: { id: parent.authorId } });
+        return user;
+      },
+    });
   },
 });

@@ -9,7 +9,7 @@ export const Mutation = objectType({
         name: stringArg({ required: true }),
         email: stringArg({ required: true }),
       },
-      resolve: async (parent: any, { name, email }, { db }) => {
+      resolve: async (parent, { name, email }, { db }) => {
         const data = await db.user.create({
           data: { name, email },
         });

@@ -11,6 +11,14 @@ export const Query = objectType({
       },
     });
 
+    t.list.field('getAllPosts', {
+      type: 'Post',
+      resolve: async (parent, args, { db }) => {
+        const posts = await db.post.findMany();
+        return posts;
+      },
+    });
+
     t.field('getUserByEmail', {
       type: 'User',
       args: {

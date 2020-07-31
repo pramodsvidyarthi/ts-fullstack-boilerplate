@@ -35,4 +35,6 @@ prisma/.env
 
 # vercel
 .vercel
-generated/
+
+# generated
+/generated/

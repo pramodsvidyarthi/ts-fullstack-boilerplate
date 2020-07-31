@@ -1,0 +1,33 @@
+# inspired from https://github.com/danilowoz/ts-gql-jsx/blob/master/codegen.yml
+overwrite: true
+schema: 'http://localhost:3000/api'
+
+hooks:
+  afterAllFileWrite:
+    - eslint --fix
+
+generates:
+  generated/schemas.ts:
+    documents: 'graphql/**/*.graphql'
+    plugins:
+      - typescript
+
+  generated/operations.ts:
+    documents: 'graphql/**/*.graphql'
+    preset: import-types
+    presetConfig:
+      typesPath: ./schemas
+    plugins:
+      - typescript-operations
+
+  generated/hooks.ts:
+    documents: 'graphql/**/*.graphql'
+    preset: import-types
+    presetConfig:
+      typesPath: ./operations
+    plugins:
+      - typescript-urql
+    config:
+      withHOC: false
+      withComponent: false
+      withHooks: true
