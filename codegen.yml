@@ -17,6 +17,7 @@ generates:
     preset: import-types
     presetConfig:
       typesPath: ./schemas
+      importTypesNamespace: SchemaTypes
     plugins:
       - typescript-operations
 
@@ -25,6 +26,7 @@ generates:
     preset: import-types
     presetConfig:
       typesPath: ./operations
+      importTypesNamespace: OperationTypes
     plugins:
       - typescript-urql
     config:
