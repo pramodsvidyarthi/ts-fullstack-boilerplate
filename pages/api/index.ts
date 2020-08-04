@@ -12,7 +12,7 @@ export const config = {
 
 export default new ApolloServer({
   schema,
-  context: { db: prisma },
+  context: { prisma },
 }).createHandler({
   path: '/api',
 });
