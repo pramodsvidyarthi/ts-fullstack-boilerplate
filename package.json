@@ -7,7 +7,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint --ignore-path .gitignore '*/**/*.{js,ts,tsx}' --fix",
+    "type-check": "tsc --pretty --noEmit",
+    "lint:fix": "eslint '*/**/*.{js,ts,tsx}' --fix",
     "clean:generated": "rm -rf generated",
     "generate:prisma": "prisma generate",
     "generate:nexus": "ts-node --transpile-only -P nexus.tsconfig.json pages/api",
@@ -22,7 +23,7 @@
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
-      "yarn lint",
+      "yarn lint:fix",
       "git add --force"
     ]
   },

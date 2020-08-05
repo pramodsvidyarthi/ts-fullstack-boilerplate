@@ -1,0 +1,7 @@
+**/node_modules/*
+**/out/*
+**/.next/*
+**/build/*
+# the below has to be removed once theis issue is fixed https://github.com/dotansimha/graphql-code-generator/issues/4486
+# or generate the operations and hooks in ths same file
+**/generated/**
