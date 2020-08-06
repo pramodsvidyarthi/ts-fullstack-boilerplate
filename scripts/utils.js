@@ -1,7 +1,7 @@
 /**
  * Adds mark tick symbol
  */
-function addCheckMark(callback?: Function) {
+function addCheckMark(callback) {
   process.stdout.write(' ✅');
   if (callback) callback();
 }
@@ -9,7 +9,7 @@ function addCheckMark(callback?: Function) {
 /**
  * Adds mark cross symbol
  */
-function addXMark(callback: Function) {
+function addXMark(callback) {
   process.stdout.write(' ❌');
   if (callback) callback();
 }
@@ -26,7 +26,7 @@ function endProcess() {
  * Report the the given error and exits the setup
  * @param {string} error
  */
-function reportError(error?: string | Error) {
+function reportError(error) {
   if (error) {
     process.stdout.write('\n\n');
     addXMark(() => process.stderr.write(` ${error}\n`));

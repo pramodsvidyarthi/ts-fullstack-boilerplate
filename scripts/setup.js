@@ -14,8 +14,8 @@ const {
  * either keep it or start with a new repository.
  * @returns {Promise<boolean>}
  */
-async function cleanCurrentRepository(): Promise<boolean> {
-  const hasGitRepo = await hasGitRepository().catch((reason: Error) =>
+async function cleanCurrentRepository() {
+  const hasGitRepo = await hasGitRepository().catch((reason) =>
     reportError(reason),
   );
 
@@ -24,7 +24,7 @@ async function cleanCurrentRepository(): Promise<boolean> {
     return false;
   }
 
-  const isClone = await checkIfRepositoryIsAClone().catch((reason: Error) =>
+  const isClone = await checkIfRepositoryIsAClone().catch((reason) =>
     reportError(reason),
   );
 
@@ -34,7 +34,7 @@ async function cleanCurrentRepository(): Promise<boolean> {
   }
 
   process.stdout.write('Removing git repository');
-  await removeGitRepository().catch((reason: Error) => reportError(reason));
+  await removeGitRepository().catch((reason) => reportError(reason));
   addCheckMark(() => process.stderr.write(` remved git repo\n`));
 }
 
@@ -45,7 +45,7 @@ function removeSetupScriptFromPackageJson() {
     // edit the json
     delete json.scripts.setup;
     //write file
-    fs.writeFileSync('file.json', JSON.stringify(json, null, 2));
+    fs.writeFileSync('package.json', JSON.stringify(json, null, 2));
   } catch (error) {
     reportError(new Error(error));
   }
