@@ -1,7 +1,7 @@
 /**
  * Adds mark tick symbol
  */
-export function addCheckMark(callback?: Function) {
+function addCheckMark(callback?: Function) {
   process.stdout.write(' ✅');
   if (callback) callback();
 }
@@ -9,7 +9,7 @@ export function addCheckMark(callback?: Function) {
 /**
  * Adds mark cross symbol
  */
-export function addXMark(callback: Function) {
+function addXMark(callback: Function) {
   process.stdout.write(' ❌');
   if (callback) callback();
 }
@@ -17,7 +17,7 @@ export function addXMark(callback: Function) {
 /**
  * End the setup process
  */
-export function endProcess() {
+function endProcess() {
   addCheckMark(() => process.stdout.write(' Done!\n'));
   process.exit(0);
 }
@@ -26,10 +26,17 @@ export function endProcess() {
  * Report the the given error and exits the setup
  * @param {string} error
  */
-export function reportError(error?: string | Error) {
+function reportError(error?: string | Error) {
   if (error) {
     process.stdout.write('\n\n');
     addXMark(() => process.stderr.write(` ${error}\n`));
     process.exit(1);
   }
 }
+
+module.exports = {
+  addCheckMark,
+  addXMark,
+  endProcess,
+  reportError,
+};

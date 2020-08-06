@@ -1,12 +1,12 @@
 // inspired from react-boilerplate
 
-import fs from 'fs';
-import { reportError, addCheckMark, endProcess } from './utils.js';
-import {
+const fs = require('fs');
+const { reportError, addCheckMark, endProcess } = require('./utils.js');
+const {
   hasGitRepository,
   checkIfRepositoryIsAClone,
   removeGitRepository,
-} from './git-utils';
+} = require('./git-utils');
 
 /**
  * Checks if we are under Git version control.

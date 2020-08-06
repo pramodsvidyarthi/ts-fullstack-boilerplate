@@ -1,11 +1,10 @@
-import { exec } from 'child_process';
-// import shell from 'shelljs';
+const { exec } = require('child_process');
 
 /**
  * Checks if we are under Git version control
  * @returns {Promise<boolean>}
  */
-export function hasGitRepository(): Promise<boolean> {
+function hasGitRepository(): Promise<boolean> {
   return new Promise((resolve, reject) => {
     exec('git status', (err: any, stdout: any) => {
       if (err) {
@@ -24,7 +23,7 @@ export function hasGitRepository(): Promise<boolean> {
  * Checks if this is a clone from our repo
  * @returns {Promise<any>}
  */
-export function checkIfRepositoryIsAClone(): Promise<any> {
+function checkIfRepositoryIsAClone(): Promise<any> {
   return new Promise((resolve, reject) => {
     exec('git remote -v', (err: any, stdout: any) => {
       if (err) {
@@ -48,7 +47,7 @@ export function checkIfRepositoryIsAClone(): Promise<any> {
  * Remove the current Git repository
  * @returns {Promise<any>}
  */
-export function removeGitRepository() {
+function removeGitRepository() {
   return new Promise((resolve, reject) => {
     exec('rm -rf .git/', (err: any, stdout: any) => {
       if (err) {
@@ -58,3 +57,9 @@ export function removeGitRepository() {
     });
   });
 }
+
+module.exports = {
+  hasGitRepository,
+  checkIfRepositoryIsAClone,
+  removeGitRepository,
+};
