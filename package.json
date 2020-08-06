@@ -14,7 +14,7 @@
     "generate:nexus": "ts-node --transpile-only -P nexus.tsconfig.json pages/api",
     "generate:gqlcodegen": "graphql-codegen --config codegen.yml",
     "generate": "yarn run generate:prisma && yarn run generate:nexus && yarn run generate:gqlcodegen",
-    "setup": "ts-node  -O \"{\\\"module\\\": \\\"commonjs\\\"}\" scripts/setup.ts"
+    "setup": "node scripts/setup.js"
   },
   "husky": {
     "hooks": {

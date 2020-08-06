@@ -1,7 +1,7 @@
 // inspired from react-boilerplate
 
 import fs from 'fs';
-import { reportError, addCheckMark, endProcess } from './utils';
+import { reportError, addCheckMark, endProcess } from './utils.js';
 import {
   hasGitRepository,
   checkIfRepositoryIsAClone,
@@ -51,11 +51,12 @@ function removeSetupScriptFromPackageJson() {
   }
 }
 
-/**
- * Run
- */
 (async () => {
   await cleanCurrentRepository();
   removeSetupScriptFromPackageJson();
   endProcess();
 })();
+
+// the script in package.json if the ts-node can be run via npx command but it requires typescript as well
+// using the -p flag with npx does not help so changing all files to .js and running using node in the script
+// "setup": "ts-node  -O \"{\\\"module\\\": \\\"commonjs\\\"}\" scripts/setup.ts"
