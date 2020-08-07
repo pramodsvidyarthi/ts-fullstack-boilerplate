@@ -43,7 +43,7 @@ async function cleanGitRepository() {
  * removes the setup script from the package.json file
  */
 function removeSetupScriptFromPackageJson() {
-  const file = path.join(__dirname, 'package.json');
+  const file = path.join(__dirname, '../package.json');
   process.stdout.write(` Removing setup script from ${file}\n`);
   try {
     // read and parse package.json
@@ -65,7 +65,7 @@ function removeSetupScriptFromPackageJson() {
  */
 
 function removeScriptsFolder() {
-  const dir = path.join(__dirname, 'scripts');
+  const dir = path.join(__dirname, '../scripts');
   process.stderr.write(` Removing ${dir} directory\n`);
   try {
     fs.rmdirSync(dir, { recursive: true });
