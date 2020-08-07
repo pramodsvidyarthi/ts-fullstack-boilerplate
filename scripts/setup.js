@@ -1,6 +1,7 @@
 // inspired from react-boilerplate
 
 const fs = require('fs');
+const path = require('path');
 const { reportError, addCheckMark, endProcess } = require('./utils.js');
 const {
   hasGitRepository,
@@ -14,7 +15,7 @@ const {
  * either keep it or start with a new repository.
  * @returns {Promise<boolean>}
  */
-async function cleanCurrentRepository() {
+async function cleanGitRepository() {
   const hasGitRepo = await hasGitRepository().catch((reason) =>
     reportError(reason),
   );
@@ -33,27 +34,51 @@ async function cleanCurrentRepository() {
     return false;
   }
 
-  process.stdout.write('Removing git repository');
+  process.stdout.write('Removing git repository\n');
   await removeGitRepository().catch((reason) => reportError(reason));
-  addCheckMark(() => process.stderr.write(` remved git repo\n`));
+  addCheckMark(() => process.stderr.write(` Removed git repo\n`));
 }
 
+/**
+ * removes the setup script from the package.json file
+ */
 function removeSetupScriptFromPackageJson() {
+  const file = path.join(__dirname, 'package.json');
+  process.stdout.write(` Removing setup script from ${file}\n`);
   try {
     // read and parse package.json
-    const json = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+    const json = JSON.parse(fs.readFileSync(file, 'utf8'));
     // edit the json
     delete json.scripts.setup;
     //write file
-    fs.writeFileSync('package.json', JSON.stringify(json, null, 2));
+    fs.writeFileSync(file, JSON.stringify(json, null, 2));
+    addCheckMark(() =>
+      process.stderr.write(` Removed setup script from ${file}\n`),
+    );
+  } catch (error) {
+    reportError(new Error(error));
+  }
+}
+
+/**
+ * recuresively delete the scripts directory and its content
+ */
+
+function removeScriptsFolder() {
+  const dir = path.join(__dirname, 'scripts');
+  process.stderr.write(` Removing ${dir} directory\n`);
+  try {
+    fs.rmdirSync(dir, { recursive: true });
+    addCheckMark(() => process.stderr.write(` Removed ${dir} directory\n`));
   } catch (error) {
     reportError(new Error(error));
   }
 }
 
 (async () => {
-  await cleanCurrentRepository();
+  await cleanGitRepository();
   removeSetupScriptFromPackageJson();
+  removeScriptsFolder();
   endProcess();
 })();
 
