@@ -1,6 +1,7 @@
 // inspired from react-boilerplate
 
 const fs = require('fs');
+const { exec } = require('child_process');
 const path = require('path');
 const { reportError, addCheckMark, endProcess } = require('./utils.js');
 const {
@@ -45,19 +46,27 @@ async function cleanGitRepository() {
 function removeSetupScriptFromPackageJson() {
   const file = path.join(__dirname, '../package.json');
   process.stdout.write(` Removing setup script from ${file}\n`);
-  try {
+  return new Promise((resolve, reject) => {
     // read and parse package.json
-    const json = JSON.parse(fs.readFileSync(file, 'utf8'));
-    // edit the json
-    delete json.scripts.setup;
-    //write file
-    fs.writeFileSync(file, JSON.stringify(json, null, 2));
-    addCheckMark(() =>
-      process.stderr.write(` Removed setup script from ${file}\n`),
-    );
-  } catch (error) {
-    reportError(new Error(error));
-  }
+    fs.readFile(file, 'utf8', (readErr, data) => {
+      if (readErr) {
+        reject(new Error(readErr));
+      }
+      // edit the json
+      const json = JSON.parse(data);
+      delete json.scripts.setup;
+      //write file
+      fs.writeFile(file, JSON.stringify(json, null, 2), (writeError) => {
+        if (writeError) {
+          reject(new Error(writeError));
+        }
+        addCheckMark(() =>
+          process.stderr.write(` Removed setup script from ${file}\n`),
+        );
+        resolve();
+      });
+    });
+  });
 }
 
 /**
@@ -66,19 +75,24 @@ function removeSetupScriptFromPackageJson() {
 
 function removeScriptsFolder() {
   const dir = path.join(__dirname, '../scripts');
-  process.stderr.write(` Removing ${dir} directory\n`);
-  try {
-    fs.rmdirSync(dir, { recursive: true });
-    addCheckMark(() => process.stderr.write(` Removed ${dir} directory\n`));
-  } catch (error) {
-    reportError(new Error(error));
-  }
+  process.stdout.write(` Removing ${dir} directory\n`);
+  return new Promise((resolve, reject) => {
+    exec(`rm -rf ${dir}`, (err, stdout) => {
+      if (err) {
+        reject(new Error(err));
+      }
+      addCheckMark(() => process.stderr.write(` Removed ${dir} directory\n`));
+      resolve(stdout);
+    });
+  });
 }
 
 (async () => {
   await cleanGitRepository();
-  removeSetupScriptFromPackageJson();
-  removeScriptsFolder();
+  await removeSetupScriptFromPackageJson().catch((reason) =>
+    reportError(reason),
+  );
+  await removeScriptsFolder().catch((reason) => reportError(reason));
   endProcess();
 })();
 
