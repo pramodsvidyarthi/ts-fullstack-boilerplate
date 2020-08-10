@@ -1,13 +1,14 @@
 // inspired from react-boilerplate
 
-const fs = require('fs');
-const { exec } = require('child_process');
 const path = require('path');
 const {
   reportError,
   addTickMark,
   endProcess,
   addLoadingMark,
+  readFile,
+  writeFile,
+  removeDirectory,
 } = require('./utils.js');
 const {
   hasGitRepository,
@@ -17,23 +18,17 @@ const {
 
 /**
  * Checks if we are under Git version control.
- * If we are and this a clone of our repository the user is given a choice to
- * either keep it or start with a new repository.
- * @returns {Promise<boolean>}
+ * @returns {Promise}
  */
 async function cleanGitRepository() {
-  const hasGitRepo = await hasGitRepository().catch((reason) =>
-    reportError(reason),
-  );
+  const hasGitRepo = await hasGitRepository().catch(reportError);
 
   // We are not under Git version control. So, do nothing
   if (hasGitRepo === false) {
     return false;
   }
 
-  const isClone = await checkIfRepositoryIsAClone().catch((reason) =>
-    reportError(reason),
-  );
+  const isClone = await checkIfRepositoryIsAClone().catch(reportError);
 
   // Not our clone so do nothing
   if (isClone === false) {
@@ -41,65 +36,43 @@ async function cleanGitRepository() {
   }
 
   addLoadingMark(() => process.stdout.write(' Removing git repository\n'));
-  await removeGitRepository().catch((reason) => reportError(reason));
+  await removeGitRepository().catch(reportError);
   addTickMark(() => process.stderr.write(' Removed git repo\n'));
 }
 
 /**
  * removes the setup script from the package.json file
+ * @returns {Promise}
  */
-function removeSetupScriptFromPackageJson() {
-  const file = path.join(__dirname, '../package.json');
+async function removeSetupScriptFromPackageJson() {
+  const filePath = path.join(__dirname, '../package.json');
   addLoadingMark(() =>
     process.stdout.write(` Removing setup script from package.json\n`),
   );
-  return new Promise((resolve, reject) => {
-    // read and parse package.json
-    fs.readFile(file, 'utf8', (readErr, data) => {
-      if (readErr) {
-        reject(new Error(readErr));
-      }
-      // edit the json
-      const json = JSON.parse(data);
-      delete json.scripts.setup;
-      //write file
-      fs.writeFile(file, JSON.stringify(json, null, 2), (writeError) => {
-        if (writeError) {
-          reject(new Error(writeError));
-        }
-        addTickMark(() =>
-          process.stderr.write(` Removed setup script from ${file}\n`),
-        );
-        resolve();
-      });
-    });
-  });
+  const packageJSON = await readFile(filePath).catch(reportError);
+  const updatedPackageJSON = delete JSON.parse(packageJSON).scripts.setup;
+  await writeFile(filePath, JSON.stringify(updatedPackageJSON)).catch(
+    reportError,
+  );
+  addTickMark(() =>
+    process.stderr.write(' Removed setup script from package.json\n'),
+  );
 }
 
 /**
- * recuresively delete the scripts directory and its content
+ *  delete the scripts directory and its content
  */
-
-function removeScriptsFolder() {
-  const dir = path.join(__dirname, '../scripts');
+async function removeScriptsFolder() {
+  const dirPath = path.join(__dirname, '../scripts');
   addLoadingMark(() => process.stdout.write(` Removing scripts directory\n`));
-  return new Promise((resolve, reject) => {
-    exec(`rm -rf ${dir}`, (err, stdout) => {
-      if (err) {
-        reject(new Error(err));
-      }
-      addTickMark(() => process.stderr.write(` Removed ${dir} directory\n`));
-      resolve(stdout);
-    });
-  });
+  await removeDirectory(dirPath).catch(reportError);
+  addTickMark(() => process.stderr.write(` Removed scripts directory\n`));
 }
 
 (async () => {
   await cleanGitRepository();
-  await removeSetupScriptFromPackageJson().catch((reason) =>
-    reportError(reason),
-  );
-  await removeScriptsFolder().catch((reason) => reportError(reason));
+  await removeSetupScriptFromPackageJson();
+  await removeScriptsFolder();
   endProcess();
 })();
 
