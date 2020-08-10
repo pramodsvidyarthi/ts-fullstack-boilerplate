@@ -1,7 +1,7 @@
 /**
  * Adds mark tick symbol
  */
-function addCheckMark(callback) {
+function addTickMark(callback) {
   process.stdout.write(' ✅');
   if (callback) callback();
 }
@@ -9,8 +9,16 @@ function addCheckMark(callback) {
 /**
  * Adds mark cross symbol
  */
-function addXMark(callback) {
+function addCrossMark(callback) {
   process.stdout.write(' ❌');
+  if (callback) callback();
+}
+
+/**
+ * Adds mark cross symbol
+ */
+function addLoadingMark(callback) {
+  process.stdout.write(' ⏳');
   if (callback) callback();
 }
 
@@ -18,7 +26,7 @@ function addXMark(callback) {
  * End the setup process
  */
 function endProcess() {
-  addCheckMark(() => process.stdout.write(' Done!\n'));
+  addTickMark(() => process.stdout.write(' Done!\n'));
   process.exit(0);
 }
 
@@ -29,14 +37,15 @@ function endProcess() {
 function reportError(error) {
   if (error) {
     process.stdout.write('\n\n');
-    addXMark(() => process.stderr.write(` ${error}\n`));
+    addCrossMark(() => process.stderr.write(` ${error}\n`));
     process.exit(1);
   }
 }
 
 module.exports = {
-  addCheckMark,
-  addXMark,
+  addLoadingMark,
+  addTickMark,
+  addCrossMark,
   endProcess,
   reportError,
 };

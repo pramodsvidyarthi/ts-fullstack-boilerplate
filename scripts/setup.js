@@ -3,7 +3,12 @@
 const fs = require('fs');
 const { exec } = require('child_process');
 const path = require('path');
-const { reportError, addCheckMark, endProcess } = require('./utils.js');
+const {
+  reportError,
+  addTickMark,
+  endProcess,
+  addLoadingMark,
+} = require('./utils.js');
 const {
   hasGitRepository,
   checkIfRepositoryIsAClone,
@@ -35,9 +40,9 @@ async function cleanGitRepository() {
     return false;
   }
 
-  process.stdout.write('Removing git repository\n');
+  addLoadingMark(() => process.stdout.write(' Removing git repository\n'));
   await removeGitRepository().catch((reason) => reportError(reason));
-  addCheckMark(() => process.stderr.write(` Removed git repo\n`));
+  addTickMark(() => process.stderr.write(' Removed git repo\n'));
 }
 
 /**
@@ -45,7 +50,9 @@ async function cleanGitRepository() {
  */
 function removeSetupScriptFromPackageJson() {
   const file = path.join(__dirname, '../package.json');
-  process.stdout.write(` Removing setup script from ${file}\n`);
+  addLoadingMark(() =>
+    process.stdout.write(` Removing setup script from package.json\n`),
+  );
   return new Promise((resolve, reject) => {
     // read and parse package.json
     fs.readFile(file, 'utf8', (readErr, data) => {
@@ -60,7 +67,7 @@ function removeSetupScriptFromPackageJson() {
         if (writeError) {
           reject(new Error(writeError));
         }
-        addCheckMark(() =>
+        addTickMark(() =>
           process.stderr.write(` Removed setup script from ${file}\n`),
         );
         resolve();
@@ -75,13 +82,13 @@ function removeSetupScriptFromPackageJson() {
 
 function removeScriptsFolder() {
   const dir = path.join(__dirname, '../scripts');
-  process.stdout.write(` Removing ${dir} directory\n`);
+  addLoadingMark(() => process.stdout.write(` Removing scripts directory\n`));
   return new Promise((resolve, reject) => {
     exec(`rm -rf ${dir}`, (err, stdout) => {
       if (err) {
         reject(new Error(err));
       }
-      addCheckMark(() => process.stderr.write(` Removed ${dir} directory\n`));
+      addTickMark(() => process.stderr.write(` Removed ${dir} directory\n`));
       resolve(stdout);
     });
   });
