@@ -1,6 +1,7 @@
 // inspired from react-boilerplate
 
 const path = require('path');
+const { exec } = require('child_process');
 const {
   reportError,
   addTickMark,
@@ -69,9 +70,32 @@ async function removeScriptsFolder() {
   addTickMark(() => process.stderr.write(` Removed scripts directory\n`));
 }
 
+/**
+ * install dependencies
+ * @returns {Promise<any>}
+ */
+function installDependencies() {
+  return new Promise((resolve, reject) => {
+    addLoadingMark(() =>
+      process.stdout.write(' Installing project dependencies...\n'),
+    );
+
+    // using npm over yarn
+    exec('npm install', (err) => {
+      if (err) {
+        reject(new Error(err));
+      }
+
+      addTickMark(() => process.stdout.write(' Dependencies installed\n'));
+      resolve();
+    });
+  });
+}
+
 (async () => {
   await cleanGitRepository();
   await removeSetupScriptFromPackageJson();
+  await installDependencies().catch(reportError);
   await removeScriptsFolder();
   endProcess();
 })();
