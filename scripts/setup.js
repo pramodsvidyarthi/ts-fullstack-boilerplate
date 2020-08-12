@@ -50,11 +50,10 @@ async function removeSetupScriptFromPackageJson() {
   addLoadingMark(() =>
     process.stdout.write(` Removing setup script from package.json\n`),
   );
-  const packageJSON = await readFile(filePath).catch(reportError);
-  const updatedPackageJSON = delete JSON.parse(packageJSON).scripts.setup;
-  await writeFile(filePath, JSON.stringify(updatedPackageJSON)).catch(
-    reportError,
-  );
+  const content = await readFile(filePath).catch(reportError);
+  const packageJSON = JSON.parse(content);
+  delete packageJSON.scripts.setup;
+  await writeFile(filePath, JSON.stringify(packageJSON)).catch(reportError);
   addTickMark(() =>
     process.stderr.write(' Removed setup script from package.json\n'),
   );
@@ -94,8 +93,8 @@ function installDependencies() {
 
 (async () => {
   await cleanGitRepository();
-  await removeSetupScriptFromPackageJson();
   await installDependencies().catch(reportError);
+  await removeSetupScriptFromPackageJson();
   await removeScriptsFolder();
   endProcess();
 })();
