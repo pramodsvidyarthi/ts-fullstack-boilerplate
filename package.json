@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "next",
+    "predev": "yarn generate",
     "build": "next build",
     "start": "next start",
     "type-check": "tsc --pretty --noEmit",

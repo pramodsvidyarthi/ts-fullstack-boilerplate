@@ -1,6 +1,6 @@
 # inspired from https://github.com/danilowoz/ts-gql-jsx/blob/master/codegen.yml
 overwrite: true
-schema: 'http://localhost:3000/api'
+schema: generated/schema.graphql
 
 hooks:
   afterAllFileWrite:
